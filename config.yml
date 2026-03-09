@@ -1,0 +1,4 @@
+apiKey: d7e302bbbb4946099e2171719260603
+baseURL: https://api.weatherapi.com/v1
+currentEndPt : /current.json
+forecastEndPt: /forecast.json

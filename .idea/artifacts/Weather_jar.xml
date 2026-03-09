@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Weather:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Weather_jar</output-path>
+    <root id="archive" name="Weather.jar">
+      <element id="module-output" name="Weather" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.21.1/jackson-core-2.21.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/2.0/snakeyaml-2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.21.1/jackson-databind-2.21.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
