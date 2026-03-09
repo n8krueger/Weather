@@ -1,38 +1,32 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 public class Weather {
-    Map<String, String> config;
 
-    public Weather() throws IOException {
-        loadConfig();
-    }
+    final String API_KEY_VARIABLE = "WeatherAPI_KEY";
+    final String WEATHERAPI_URL = "https://api.weatherapi.com/v1/forecast.json";
 
-    public Map<String, String> loadConfig() throws IOException {
-        InputStream inputStream = Files.newInputStream(Paths.get("config.yml"));
-        Yaml yaml = new Yaml();
-        config = yaml.load(inputStream);
-        return config;
+    String apiKey = "";
+
+    public Weather() {
+        apiKey = System.getenv(API_KEY_VARIABLE);
     }
 
     public void getCurrentWeather(String zipcode) {
-        String url = config.get("baseURL") + config.get("currentEndPt");
-        String paramString = "?key=" + config.get("apiKey") + "&q=" + zipcode;
+
+        String paramString = "?key=" + apiKey + "&q=" + zipcode;
 
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url+paramString))
+                .uri(URI.create(WEATHERAPI_URL+paramString))
                 .GET()
                 .header("Accept", "application/json")
                 .build();
