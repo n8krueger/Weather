@@ -13,7 +13,7 @@ public class Weather {
     final String API_KEY_VARIABLE = "WeatherAPI_KEY";
     final String WEATHERAPI_URL = "https://api.weatherapi.com/v1/forecast.json";
 
-    String apiKey = "";
+    String apiKey;
 
     public Weather() {
         apiKey = System.getenv(API_KEY_VARIABLE);

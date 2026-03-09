@@ -1,8 +1,6 @@
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class WeatherTest {
@@ -10,7 +8,7 @@ class WeatherTest {
     static Weather weather;
 
     @BeforeAll
-    static void setup() throws IOException {
+    static void setup() {
         weather = new Weather();
     }
 
