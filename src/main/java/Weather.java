@@ -7,6 +7,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Iterator;
 
 public class Weather {
@@ -42,11 +45,25 @@ public class Weather {
 
         System.out.println("The 10-day forecast for " + location);
 
+        int dayCount = 1;
         Iterator<JsonNode> days = jsonNode.path("forecast").path("forecastday").elements();
         while (days.hasNext()) {
             JsonNode day = days.next();
             String date = day.path("date").asText();
-            System.out.println(date);
+            String forecastDay = LocalDate.parse(date).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));
+            String highTemp = day.path("day").path("maxtemp_f").asText();
+            String lowTemp = day.path("day").path("mintemp_f").asText();
+            String rainChance = day.path("day").path("daily_chance_of_rain").asText();
+            String conditions = day.path("day").path("condition").path("text").asText();
+
+            System.out.println("DAY " + dayCount);
+            System.out.println(forecastDay);
+            System.out.println(conditions + ", " + highTemp + "/" + lowTemp + "F");
+            System.out.println("Chance of Rain: " + rainChance + "%");
+
+            System.out.println();
+
+            dayCount++;
         }
 
         lineBreak();

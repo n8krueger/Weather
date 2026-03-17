@@ -63,7 +63,6 @@ public class Main {
     }
 
     private static void showMenu() {
-        System.out.println();
         System.out.println("---- Menu ----");
         System.out.println("1. Get current weather");
         System.out.println("2. Get 10-day forecast");
