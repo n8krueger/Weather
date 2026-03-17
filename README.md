@@ -16,22 +16,13 @@ menu for users to make selections. Weather info is being retrieved via REST api 
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* Copy/Paste jar file from out/artifacts/ to desired directory
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+* In console, navigate to directory containing jar file
 ```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
+java -jar Weather.jar
 ```
 
 ## Authors
@@ -42,5 +33,5 @@ Nathan Krueger
 
 ## Version History
 
-* 0.1
+* 1.0
     * Initial Release
