@@ -1,15 +1,13 @@
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
     private static String zipcode = "";
     private static Weather weather;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         weather = new Weather();
-
 
         boolean running = true;
 
@@ -25,7 +23,7 @@ public class Main {
             }
         }
 
-        scanner.close();
+        SCANNER.close();
     }
 
     public static boolean menu() {
@@ -38,15 +36,19 @@ public class Main {
 
             if(validateMenuInput(choice)) {
                 switch (choice) {
+                    // get current weather
                     case "1":
                         weather.getCurrentWeather(zipcode);
                         break;
+                    // get 10-day forecast
                     case "2":
-                        System.out.println("Here is the 5-day forecast for " + zipcode);
+                        weather.getTenDayForecast(zipcode);
                         break;
+                    // go back and enter new zipcode
                     case "3":
                         back = true;
                         break;
+                    // exit
                     case "0":
                         return false;
                 }
@@ -63,18 +65,18 @@ public class Main {
     private static void showMenu() {
         System.out.println("---- Menu ----");
         System.out.println("1. Get current weather");
-        System.out.println("2. Get 5-day forecast");
+        System.out.println("2. Get 10-day forecast");
         System.out.println("3. Enter new zipcode");
         System.out.println("0. Quit");
         System.out.print("Enter your choice: ");
     }
 
     private static String getInput() {
-        while(!scanner.hasNext()) {
-            scanner.next();
+        while(!SCANNER.hasNext()) {
+            SCANNER.next();
         }
 
-        return scanner.next();
+        return SCANNER.next();
     }
 
     public static boolean validateZipcode(String sZipcode) {
