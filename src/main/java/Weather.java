@@ -1,4 +1,5 @@
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
@@ -6,7 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Map;
+import java.util.Iterator;
 
 public class Weather {
 
@@ -20,8 +21,44 @@ public class Weather {
     }
 
     public void getCurrentWeather(String zipcode) {
+        JsonNode jsonNode = getWeatherFromAPI(zipcode);
+        String location = getLocation(jsonNode);
+        String temp = jsonNode.path("current").path("temp_f").asText();
+        String condition = jsonNode.path("current").path("condition").path("text").asText();
 
-        String paramString = "?key=" + apiKey + "&q=" + zipcode;
+        lineBreak();
+
+        System.out.println("The current weather at " + location);
+        System.out.println(condition + ", " + temp + "F");
+
+        lineBreak();
+    }
+
+    public void getTenDayForecast(String zipcode) {
+        JsonNode jsonNode = getWeatherFromAPI(zipcode);
+        String location = getLocation(jsonNode);
+
+        lineBreak();
+
+        System.out.println("The 10-day forecast for " + location);
+
+        Iterator<JsonNode> days = jsonNode.path("forecast").path("forecastday").elements();
+        while (days.hasNext()) {
+            JsonNode day = days.next();
+            String date = day.path("date").asText();
+            System.out.println(date);
+        }
+
+        lineBreak();
+    }
+
+    // get all data from the forecast endpoint.
+    public JsonNode getWeatherFromAPI(String zipcode) {
+
+        String jsonBody = "";
+        JsonNode jsonNode = null;
+
+        String paramString = "?key=" + apiKey + "&q=" + zipcode + "&days=10";
 
         HttpClient client = HttpClient.newHttpClient();
 
@@ -33,22 +70,34 @@ public class Weather {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            jsonBody = response.body();
+        }
+        catch (IOException | InterruptedException e) {
+            // TODO: handle exception
+        }
 
-            String jsonBody = response.body();
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
-
-            Map<String, Object> map = objectMapper.readValue(jsonBody, new TypeReference<>() {});
-            Map<String, String> locationMap = (Map<String, String>) map.get("location");
-            Map<String, Object> currentMap = (Map<String, Object>) map.get("current");
-            Map<String, String> conditionsMap = (Map<String, String>) currentMap.get("condition");
-
-            //System.out.println("Status Code: " + response.statusCode());
-            System.out.println("The current weather for " + locationMap.get("name") + ", " + locationMap.get("region") + " is " + currentMap.get("temp_f") + "F, " + conditionsMap.get("text"));
+            jsonNode = objectMapper.readTree(jsonBody);
         }
-        catch (IOException | InterruptedException e)
-        {
-            e.printStackTrace();
+        catch (JsonProcessingException e) {
+            // TODO: handle exception
         }
+
+        return jsonNode;
     }
 
+    public String getLocation(JsonNode jsonNode) {
+
+        String city = jsonNode.path("location").path("name").asText();
+        String state = jsonNode.path("location").path("region").asText();
+
+        return city + ", " + state;
+    }
+
+    private void lineBreak() {
+        System.out.println();
+        System.out.println("----------------------------------------------------------------------");
+        System.out.println();
+    }
 }
