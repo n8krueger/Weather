@@ -1,26 +1,33 @@
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
 
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static String zipcode = "";
-    private static Weather weather;
 
-    public static void main(String[] args) {
+    private static Weather weather;
+    private static JsonNode weatherJson;
+
+    public static void main(String[] args) throws IOException, InterruptedException {
         weather = new Weather();
 
         boolean running = true;
 
         while (running) {
             System.out.print("Enter your zipcode: ");
-            zipcode = getInput();
+            String zipCode = getInput();
 
-            if (validateZipcode(zipcode)) {
+            try {
+                weatherJson = weather.getWeatherFromAPI(zipCode);
                 running = menu();
             }
-            else {
-                System.out.println("Invalid zipcode, please try again.");
+            // catch illegal argument, print error message and retry loop
+            catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
+
         }
 
         SCANNER.close();
@@ -38,11 +45,11 @@ public class Main {
                 switch (choice) {
                     // get current weather
                     case "1":
-                        weather.getCurrentWeather(zipcode);
+                        weather.getCurrentWeather(weatherJson);
                         break;
                     // get 10-day forecast
                     case "2":
-                        weather.getTenDayForecast(zipcode);
+                        weather.getTenDayForecast(weatherJson);
                         break;
                     // go back and enter new zipcode
                     case "3":
@@ -66,7 +73,7 @@ public class Main {
         System.out.println("---- Menu ----");
         System.out.println("1. Get current weather");
         System.out.println("2. Get 10-day forecast");
-        System.out.println("3. Enter new zipcode");
+        System.out.println("3. Enter new zip code");
         System.out.println("0. Quit");
         System.out.print("Enter your choice: ");
     }
@@ -77,23 +84,6 @@ public class Main {
         }
 
         return SCANNER.next();
-    }
-
-    public static boolean validateZipcode(String sZipcode) {
-        try {
-            int zipcode = Integer.parseInt(sZipcode);
-            if (zipcode<501||zipcode>99734) {
-                // zipcode was outside range
-                return false;
-            }
-        }
-        catch (NumberFormatException e) {
-            // zipcode was not numeric
-            return false;
-        }
-
-        // else zipcode valid
-        return true;
     }
 
     public static boolean validateMenuInput(String sChoice) {
