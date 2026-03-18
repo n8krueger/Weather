@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -36,21 +37,11 @@ class WeatherTest {
     }
 
     @Test
-    void getWeatherTest() {
+    void getWeatherTest() throws IOException, InterruptedException {
         JsonNode node = weather.getWeatherFromAPI("28412");
 
         assertNotNull(node);
     }
-
-//    @Test
-//    void getWeatherTest_pullDateTimeWithin30mins() throws InterruptedException, IOException {
-//        weather.getWeather("28412", Weather.FORECAST_OPTION.CURRENT);
-//        Map<String, Object> pull1 = weather.weatherMap;
-//
-//        // new
-//        weather.getWeather("21771", Weather.FORECAST_OPTION.CURRENT);
-//
-//    }
 
     @Test
     void getLocationTest() {
@@ -59,6 +50,39 @@ class WeatherTest {
         String actual = weather.getLocation(jsonNode);
 
         assertEquals(expected, actual);
+    }
+
+    @Nested
+    class ZipCodeTests {
+        @Test
+        void validateZipCodeTest_validZipCode() {
+            assertTrue(weather.validateZipCode("12345"));
+        }
+
+        @Test
+        void validateZipCodeTest_invalidZipCode_tooShort() {
+            assertFalse(weather.validateZipCode("1234"));
+        }
+
+        @Test
+        void validateZipCodeTest_invalidZipCode_tooLong() {
+            assertFalse(weather.validateZipCode("123456"));
+        }
+
+        @Test
+        void validateZipCodeTest_invalidZipCode_null() {
+            assertFalse(weather.validateZipCode(null));
+        }
+
+        @Test
+        void validateZipCodeTest_invalidZipCode_empty() {
+            assertFalse(weather.validateZipCode(""));
+        }
+
+        @Test
+        void validateZipCodeTest_invalidZipCode_nonnumeric() {
+            assertFalse(weather.validateZipCode("a1234"));
+        }
     }
 
 }
