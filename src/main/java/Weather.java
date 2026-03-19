@@ -13,15 +13,6 @@ import java.util.Iterator;
 
 public class Weather {
 
-    final private String API_KEY;
-
-    public Weather() {
-            API_KEY = System.getenv("WeatherAPI_KEY");
-            if(API_KEY == null) {
-                throw new RuntimeException("WeatherAPI_KEY environment variable not set");
-            }
-    }
-
     public void getCurrentWeather(JsonNode weatherJson) {
 
         String location = getLocation(weatherJson);
@@ -71,12 +62,17 @@ public class Weather {
     // get all data from the forecast endpoint.
     public JsonNode getWeatherFromAPI(String zipCode) throws IOException, InterruptedException{
 
+        String apiKey = System.getenv("WeatherAPI_KEY");
+        if(apiKey == null) {
+            throw new RuntimeException("WeatherAPI_KEY environment variable not set");
+        }
+
         // validate basic format of zip code
         if (!validateZipCode(zipCode)) {
             throw new IllegalArgumentException("Invalid zip code");
         }
 
-        String urlString = String.format("https://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=10", API_KEY, zipCode);
+        String urlString = String.format("https://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=10", apiKey, zipCode);
 
         HttpClient client = HttpClient.newHttpClient();
 
