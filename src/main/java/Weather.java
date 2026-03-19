@@ -13,14 +13,13 @@ import java.util.Iterator;
 
 public class Weather {
 
-    private final String API_KEY_VARIABLE = "WeatherAPI_KEY";
-    private final String WEATHERAPI_URL = "https://api.weatherapi.com/v1/forecast.json";
-    private final String ZIPCODE_REGEX_PATTERN = "^[0-9]{5}$";
-
-    final String API_KEY;
+    final private String API_KEY;
 
     public Weather() {
-        API_KEY = System.getenv(API_KEY_VARIABLE);
+            API_KEY = System.getenv("WeatherAPI_KEY");
+            if(API_KEY == null) {
+                throw new RuntimeException("WeatherAPI_KEY environment variable not set");
+            }
     }
 
     public void getCurrentWeather(JsonNode weatherJson) {
@@ -77,12 +76,12 @@ public class Weather {
             throw new IllegalArgumentException("Invalid zip code");
         }
 
-        String paramString = "?key=" + API_KEY + "&q=" + zipCode + "&days=10";
+        String urlString = String.format("https://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=10", API_KEY, zipCode);
 
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(WEATHERAPI_URL+paramString))
+                .uri(URI.create(urlString))
                 .GET()
                 .header("Accept", "application/json")
                 .build();
@@ -105,11 +104,13 @@ public class Weather {
     }
 
     public boolean validateZipCode(String zipCode) {
+        String zipCodeRegex = "^[0-9]{5}$";
+
         if (zipCode == null || zipCode.isEmpty()) {
             return false;
         }
 
-        return zipCode.matches(ZIPCODE_REGEX_PATTERN);
+        return zipCode.matches(zipCodeRegex);
     }
 
     public String getLocation(JsonNode jsonNode) {

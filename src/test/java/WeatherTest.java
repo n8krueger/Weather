@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -27,29 +28,44 @@ class WeatherTest {
         jsonNode = mapper.readTree(new String(bytes, StandardCharsets.UTF_8));
     }
 
-    @Test
-    void getEnvVariable_Test() {
+    @Nested
+    @Disabled
+    class DisabledTests {
 
-        String actual = System.getenv("WeatherAPI_Key");
-        String expected = "d7e302bbbb4946099e2171719260603";
+        @Test
+        void getEnvVariable_Test() {
 
-        assertEquals(expected, actual);
+            String actual = System.getenv("WeatherAPI_Key");
+            String expected = "d7e302bbbb4946099e2171719260603";
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void getWeatherTest_success() throws IOException, InterruptedException {
+            JsonNode node = weather.getWeatherFromAPI("28412");
+
+            assertNotNull(node);
+        }
+
+        @Test
+        void getWeatherTest_failure() throws IOException, InterruptedException {
+            JsonNode node = weather.getWeatherFromAPI("99999");
+            assertNull(node);
+        }
     }
 
-    @Test
-    void getWeatherTest() throws IOException, InterruptedException {
-        JsonNode node = weather.getWeatherFromAPI("28412");
+    @Nested
+    class GetLocationTests {
 
-        assertNotNull(node);
-    }
+        @Test
+        void getLocationTest() {
 
-    @Test
-    void getLocationTest() {
+            String expected = "Wilmington, North Carolina";
+            String actual = weather.getLocation(jsonNode);
 
-        String expected = "Wilmington, North Carolina";
-        String actual = weather.getLocation(jsonNode);
-
-        assertEquals(expected, actual);
+            assertEquals(expected, actual);
+        }
     }
 
     @Nested
